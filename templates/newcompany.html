@@ -1,0 +1,140 @@
+{% extends base.html %}
+
+{% block title %}Agregar empresa{% end %}
+{% block header %}{% include "partials/header.html" %}{% end %}
+{% block body %}
+<div class="container container-fluid">
+    <form class="form-horizontal" action="/companies/new/" method="post" accept-charset="utf-8" enctype="multipart/form-data" role="form">
+        <h3 class="blockleft">Nueva Empresa</h3>
+        <div class="blockclear"></div>
+        <div class="panel panel-default thumbnail">
+            <div class="panel-body">
+                <div class="form-group">
+                    <label for="ruc" class="col-sm-2 control-label">RUC</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control formtosave fieldunique" id="ruc" name="ruc" placeholder="Ruc" data-name="Ruc">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="compdescription" class="col-sm-2 control-label">Nombre</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control formtosave" id="compdescription" name="compdescription" placeholder="Nombre de la empresa" data-name="Nombre de la empresa">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="compaddress" class="col-sm-2 control-label">Dirección</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control formtosave" id="compaddress" name="compaddress" placeholder="Dirección" data-name="Dirección">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="compphone" class="col-sm-2 control-label">Teléfono</label>
+                    <div class="col-sm-10">
+                        <input type="phone" class="form-control formtosave" id="compphone" name="compphone" placeholder="Teléfono" data-name="Teléfono">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="compcontactname" class="col-sm-2 control-label">Nombre de contacto</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control formtosave" id="compcontactname" name="compcontactname" placeholder="Nombre de contacto" data-name="Nombre de contacto">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="compcorreo" class="col-sm-2 control-label">Correo</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control formtosave" id="compcorreo" name="compcorreo" placeholder="Correo electrónico" data-name="Correo electrónico"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="compweb" class="col-sm-2 control-label">Sitio Web</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control formtosave" id="compweb" name="compweb" placeholder="Sitio Web" data-name="Sitio Web"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Activo</label>
+                    <div class="col-sm-10"><input type="checkbox" id="fieldactive" name="fieldactive" checked></div>
+                </div>
+            </div>          
+        </div>
+        <div class="btn-actions-footer">
+            <a class="btn btn-info btn-lg blockright" href="/companies/">Cancelar</a>
+            <button class="btn btn-primary btn-lg blockright" id="btnsave" type="submit">Guardar</button>
+            <div class="blockclear"></div>
+        </div>
+        <br><br>
+    </form>
+</div>
+{% end %}
+{% block footer %}{% include "partials/footer.html" %}{% end %}
+
+{% block scriptbody %}
+    <script type="text/javascript">
+
+        function validateForm()
+        {
+            var flagsave = true;
+            $(".formtosave").each(function (index, data) {
+
+                switch (data.nodeName) {
+                    case "INPUT":
+                        if (data.value.trim() === ""){
+                            data.focus();
+                            flagsave = false;
+                            $.notify("{0} es obligatorio".format($(data).attr("data-name")),"error");
+                            return false;
+                        }
+                        else if($(data).is("[data-field-exist]") && $(data).attr("data-field-exist") === "true"){
+                            data.focus();
+                            flagsave = false;
+                            $.notify("{0} ya se encuentra registrado".format($(data).attr("data-name")),"error");
+                            return false;
+                        }                           
+                        break;                  
+                }               
+            });
+            return flagsave;
+        }
+
+        $(document).on("change",".fieldunique", function(){
+            var idfield = $(this).attr("id");
+            var valuefield = $(this).val().trim();
+            if (valuefield !== "")
+            {
+                request_get_json("/verify/unique/",{type:idfield, value:valuefield}, function(data){
+                    var rs = data[0];
+                    
+                    if (rs === 0){
+                        $("#{0}".format(idfield)).removeClass("inputloader");
+                        $("#{0}".format(idfield)).removeClass("inputerror");
+                        $("#{0}".format(idfield)).addClass("inputcheck");                   
+                        $("#{0}".format(idfield)).removeAttr("data-field-exist");
+                    }
+                    else{
+                        $("#{0}".format(idfield)).removeClass("inputloader");
+                        $("#{0}".format(idfield)).removeClass("inputcheck");
+                        $("#{0}".format(idfield)).addClass("inputerror");
+                        $.notify("{0} ya se encuentra registrado".format($("#{0}".format(idfield)).attr("data-name")),"error");
+                        $("#{0}".format(idfield)).focus();                  
+                        $("#{0}".format(idfield)).attr("data-field-exist","true");
+                    }
+                }, null, function(data){ $("#{0}".format(idfield)).addClass("inputloader"); }, function(data){ $("#{0}".format(idfield)).removeClass("inputloader"); });    
+            }
+            else
+            {
+                $("#{0}".format(idfield)).removeClass("inputloader");
+                $("#{0}".format(idfield)).removeClass("inputerror");
+                $("#{0}".format(idfield)).removeClass("inputcheck");
+                $("#{0}".format(idfield)).removeAttr("data-field-exist");
+            }
+            
+        });
+
+        $(document).on("click","#btnsave", function(){
+            var flagsave = true;            
+            flagsave = validateForm();
+            return flagsave;            
+        });
+
+    </script>
+{% end scriptbody %}

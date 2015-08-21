@@ -1,0 +1,186 @@
+{% extends base.html %}
+
+{% block title %}Empresa{% end %}
+{% block header %}{% include "partials/header.html" %}{% end %}
+
+{% block body %}
+
+    <div class="container padded">
+        <div class="row">    
+            <div class="col-md-3">
+                <div class="input-group">
+                    <input id="txtInputSearch" class="form-control" type="text" placeholder="Buscar">
+                    <div class="input-group-btn">
+                        <button id="btnsearch" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                    </div>
+                </div>
+            </div>   
+            <div class="col-md-9"><a href="/companies/new/" class="blockright"><button type="button" class="btn">Agregar <span class="glyphicon glyphicon-plus"></span></button></a>
+            </div>            
+        </div>
+    </div>
+
+    <div class="container padded-bottom">
+        {% if not companies %}
+            <em>No hay ningúna empresa registrada aún.</em>
+        {% else %}
+            <table id="tbcompanies" class="table">
+              <thead>
+                <tr>
+                  <th>Ruc</th>    
+                  <th>Nombre</th>                
+                  <th></th>        
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>        
+                {% for company in companies %}
+                    <tr>
+                        <td><a href="/companies/licenses/?ruc={{ company[0] }}&companyname={{ company[1] }}">{{ company[0] }}</a></td>
+                        <td>{{ company[1] }}</td>
+                        <td><a href="/companies/modify/?d={{ company[0] }}" class="btn btn-default">Editar <span class="glyphicon glyphicon-edit"></span></a></td>
+                        <td><a href="javascript:void(0);" onclick="saleQrs('{{ company[0] }}','{{ company[1] }}');" class="btn btn-default">Vender <span class="glyphicon glyphicon-shopping-cart"></span></a></td>
+                    </tr>   
+                {% end %}
+              </tbody>      
+            </table>        
+        {% end %}
+    </div>
+
+   
+    <div class="modal fade" id="pnlSaleQrs" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header" id="pnlSaleQrs_header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="pnlSaleQrs_title"></h4>
+          </div>
+          <div class="modal-body" id="pnlSaleQrs_body">
+              <br><br>
+              <input type="hidden" id="hdnRuc" class="formtosave">
+              <div class="form-horizontal">       
+                <div class="form-group">
+                    <label for="txtNumberQrs" class="col-sm-2 control-label">Numero de QRs</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control formtosave positive-integer" id="txtNumberQrs" name="txtNumberQrs" placeholder="Numero de QRs" data-name="Numero de QRs">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="ddlperiod" class="col-sm-2 control-label">Vencimiento</label>
+                    <div class="col-sm-10">
+                        <select class="form-control formtosave" id="ddlperiod" name="ddlperiod" data-name="Vencimiento">
+                          <option value="">Seleccionar</option>
+                          <option value="30">1 mes</option>
+                          <option value="60">2 meses</option>
+                          <option value="90">3 meses</option>
+                          <option value="120">4 meses</option>
+                          <option value="180">6 meses</option>
+                        </select>
+                    </div>
+                </div>
+              </div> 
+          </div>
+          <div class="modal-footer" id="pnlSaleQrs_footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            <button id="btnSaleQrs" type="button" class="btn btn-primary">Vender</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% end body %}
+
+{% block footer %}{% include "partials/footer.html" %}{% end %}
+
+{% block scriptbody %}
+      <script src="{{ static_url("js/jquery.numeric.js") }}"></script>
+      <script src="{{ static_url("js/jquery.numeric.start.js") }}"></script>
+      <script id="company_template" type="text/x-handlebars-template">
+        {{!#Companies}} 
+          <tr>
+              <td><a href="/companies/licenses/?ruc={{!ruc}}&companyname={{!description}}">{{!ruc}}</a></td>
+              <td>{{!description}}</td>
+              <td><a href="/companies/modify/?d={{!ruc}}" class="btn btn-default">Editar <span class="glyphicon glyphicon-edit"></span></a></td>
+              <td><a href="javascript:void(0);" onclick="saleQrs('{{!ruc}}','{{!description}}');" class="btn btn-default">Vender <span class="glyphicon glyphicon-shopping-cart"></span></a></td>
+          </tr>  
+        {{!/Companies}}
+      </script>
+      <script>
+
+        if (getCookie("newcompanysaved") != "") {
+            main_ns.msgSuccess("Empresa guardada");
+            deleteCookie("newcompanysaved");
+        }
+
+        function validateForm()
+        {
+          var flagsave = true;
+          $(".formtosave").each(function (index, data) {
+
+            switch (data.nodeName) {
+              case "SELECT":
+              case "INPUT":
+                if (data.value.trim() === ""){
+                  data.focus();
+                  flagsave = false;
+                  main_ns.msgError("{0} es obligatorio".format($(data).attr("data-name")),"#pnlSaleQrs_header");
+                  return false;
+                }                         
+                break;          
+            }       
+          });
+          return flagsave;
+        }
+
+        function saleQrs (ruc,name) {
+            $(".formtosave").val("");
+            $("#hdnRuc").val(ruc);
+            var title = "Vender QRs a {0}".format(name);
+            $("#pnlSaleQrs_title").text(title);
+            $("#pnlSaleQrs").modal("show");                     
+        }        
+
+        $("#btnSaleQrs").on("click", function(){
+            
+            if (validateForm()) {
+              
+              var ruc = $("#hdnRuc").val();
+              var period = $("#ddlperiod").val();       
+              var numqrs = $("#txtNumberQrs").val();
+
+              request_get_json("/companies/sale/",{ruc:ruc, period:period, numqrs:numqrs}, 
+                function(data){
+                    var rs = data[0];
+                    
+                    if (rs === 0){
+                        main_ns.msgSuccess("Licencia fue creada satisfactoriamente.");
+                    }
+                    else{
+                        main_ns.msgError("No se pudo realizar la operacion de venta");
+                    }
+                    $("#pnlSaleQrs").modal("hide");
+                }, 
+                function(data){ 
+                    $("#pnlSaleQrs").modal("hide");
+                    main_ns.msgError("Sucedio un error en la operacion de la venta");
+                }, 
+                function(data){ $("#pnlSaleQrs_footer").addClass("inputloadercenter");}, 
+                function(data){ $("#pnlSaleQrs_footer").removeClass("inputloadercenter");} );  
+               
+            } 
+
+        });
+
+        $("#btnsearch").on("click", function(){
+            var input = $("#txtInputSearch").val();
+            $("#tbcompanies tbody").html("");
+            var templatehtml = $("#company_template").html();
+            var sourcehtml = Handlebars.compile(templatehtml);
+            request_get_json("/companies/search/", {ruc:input, name:input}, function(data){
+                $("#tbcompanies tbody").html(sourcehtml({Companies:data}));
+            });
+        });
+
+      </script>
+{% end scriptbody %}

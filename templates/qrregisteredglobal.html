@@ -1,0 +1,96 @@
+{% extends base.html %}
+
+{% block title %}QRs Registrados Globales{% end %}
+{% block header %}{% include "partials/header.html" %}{% end %}
+
+{% block body %}
+
+    <div class="container padded">
+        <div class="row">    
+            <div class="col-md-3">
+                <div class="input-group">
+                    <input id="txtInputSearch" class="form-control" type="text" placeholder="Buscar">
+                    <div class="input-group-btn">
+                        <button id="btnsearch" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>                        
+                    </div>
+                </div>                
+            </div>    
+            <div class="col-md-6">
+                <div class="row">
+                    <label for="ddlperiod" class="col-sm-2 control-label" style="top:8px">Periodo</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="ddlperiod">
+                          <option value="">Seleccionar</option>
+                          <option value="t">Hoy</option>
+                          <option value="w">Esta semana</option>
+                          <option value="m">Este mes</option>                  
+                        </select>
+                    </div>
+                </div>
+            </div>  
+            <div class="col-md-3">
+                <a class="btn btn-info btn-lg blockright" href="/global/">Regresar</a>  
+                <div class="blockclear"></div>      
+            </div>                     
+        </div>
+    </div>
+
+    <div class="container padded-bottom">
+        <div id="contentQrRegistered"></div>
+    </div>
+   
+{% end body %}
+
+{% block footer %}{% include "partials/footer.html" %}{% end %}
+
+{% block scriptbody %}
+      <script src="{{ static_url("js/jquery.numeric.js") }}"></script>
+      <script src="{{ static_url("js/jquery.numeric.start.js") }}"></script>      
+
+      <script id="qrregistered_template" type="text/x-handlebars-template">
+        {{!#if QrRegisteredGlobal}}          
+            <table id="tbqrregistered" class="table table-bordered table-hover table-common-idtaxi">
+                <thead>
+                    <tr>
+                        <th>Distribuidor</th>
+                        <th>Email</th>
+                        <th>QRs Vendidos</th>                        
+                    </tr>
+                </thead>
+                <tbody>
+                {{!#QrRegisteredGlobal}} 
+                    <tr>
+                        <td>{{!name}}</td>
+                        <td>{{!email}}</td>
+                        <td>{{!total_qrs}}</td>                        
+                    </tr>  
+                {{!/QrRegisteredGlobal}}         
+                </tbody>
+            </table>                 
+        {{!else}}
+          <p class="">No se encontro qrs vendidos.</p>
+        {{!/if}}        
+      </script>
+
+      <script>
+
+        function renderQrRegistered(data) {
+            $("#contentQrRegistered").html("");
+            var templatehtml = $("#qrregistered_template").html();
+            var sourcehtml = Handlebars.compile(templatehtml);
+            $("#contentQrRegistered").html(sourcehtml({ QrRegisteredGlobal: data }));
+        }        
+
+        $("#btnsearch").on("click", function(){
+            var input = $("#txtInputSearch").val();           
+            var period = $("#ddlperiod").val();           
+            request_get_json("/global/qrs/search/", {input:input,period:period}, function(data){
+                renderQrRegistered(data);
+            });
+        });
+
+        var array_qrs = {% raw array_json %};
+        renderQrRegistered(array_qrs);
+
+      </script>
+{% end scriptbody %}

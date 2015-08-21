@@ -1,0 +1,54 @@
+{% extends base.html %}
+
+{% block title %}Dashboard Global{% end %}
+
+{% block header %}{% include "partials/header.html" %}{% end %}
+{% block body %}
+
+    <div class="container padded-top padded-bottom">
+        <div class="row">  
+            <div class="col-md-4 col-md-offset-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><b>QR vendidos</b></div>
+                    <div class="panel-body">
+                        <p><em>Hoy <span class="badge" id="num_today"></span></em></p>
+                        <p><em>Esta semana <span class="badge" id="num_week"></span></em></p>
+                        <p><em>Este mes <span class="badge" id="num_month"></span></em></p>
+                        <a href="/global/qrs/">Ver mas detalles</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {#
+    <select id="ddlQrType" class="form-control">
+      <option value="p">Pendientes</option>
+      <option value="r">Registrados</option>
+    </select>
+    #}
+
+{% end %}
+
+{% block footer %}{% include "partials/footer.html" %}{% end %}
+
+{% block scriptbody %}
+    <script>
+        var dict_json = {% raw dict_json %};
+        buildUUIDsSaled(dict_json);
+        
+        function buildUUIDsSaled (dict) {
+            if (typeof dict === "object") {
+                if (dict.hasOwnProperty("today")) {
+                    $("#num_today").text("{0}".format(dict.today));
+                }
+                if (dict.hasOwnProperty("week")) {
+                    $("#num_week").text("{0}".format(dict.week));
+                }
+                if (dict.hasOwnProperty("month")) {
+                    $("#num_month").text("{0}".format(dict.month));
+                }
+            }
+        }
+       
+    </script>
+{% end %}

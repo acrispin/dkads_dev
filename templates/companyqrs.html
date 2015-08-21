@@ -1,0 +1,414 @@
+{% extends base.html %}
+
+{% block title %}Qrs por Empresa{% end %}
+
+{% block header %}{% include "partials/header.html" %}{% end %}
+
+{% block body %}
+
+    <div class="container padded">        
+        <div id="contentInfoCompany" class="blockleft">
+            <div id="infoComapnyName">
+                <span>Empresa: </span>
+                <span>{{companyname}}</span>
+            </div>
+            <br>
+            <div id="infoComapnyRuc">
+                <span>RUC: </span>
+                <span>{{ruc}}</span>
+            </div>
+            <br>
+            <div id="infoLicense">
+                <span>Nro Licencia: </span>
+                <span>{{license}}</span>
+            </div>
+        </div>
+        <a class="btn btn-info btn-lg blockright" href="/companies/licenses/?ruc={{ruc}}&companyname={{companyname}}">Regresar</a>    
+        <div class="blockclear"></div>
+    </div>
+
+    <div class="container padded-bottom">       
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><b>QR disponibles</b></div>                    
+                    <table id="tbuuids_available" class="table table-common-idtaxi">
+                      <thead>
+                        <tr>
+                          <th>Nr QR</th>
+                          <th>QR UUID</th>
+                          <th>Accion</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><b>QR vendidos</b></div>
+                    <table id="tbuuids_registered" class="table table-common-idtaxi">
+                      <thead>
+                        <tr>
+                          <th>QR UUID</th>
+                          <th>Placa</th>
+                          <th>Dni</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>        
+    </div>    
+
+    <div class="modal fade" id="pnlRegisterQR" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" id="pnlRegisterQR_header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="pnlRegisterQR_title"></h4>
+            </div> <!-- modal-header -->
+            <div class="modal-body" id="pnlRegisterQR_body">       
+                <form id="frmRegiterQr" action="/companies/qrs/" class="form-horizontal" method="post" accept-charset="utf-8" enctype="multipart/form-data" role="form" autocomplete="off">    
+                    
+                    <input type="hidden" id="hdnqrnumber" name="hdnqrnumber">                
+                    <input type="hidden" id="hdnqruuid" name="hdnqruuid">                
+                    <input type="hidden" id="hdnNumberQrsAvailable" name="hdnNumberQrsAvailable">                
+                    <input type="hidden" id="hdncompanyname" name="hdncompanyname" value="{{companyname}}">                
+                    <input type="hidden" id="hdnruc" name="hdnruc" value="{{ruc}}">                
+                    <input type="hidden" id="hdnlicense" name="hdnlicense" value="{{license}}">                
+
+                    <!-- Driver -->
+                    <div class="panel panel-default thumbnail">
+                        <div class="panel-heading">Conductor</div>
+                        <div class="panel-body">
+                            <div>
+                                <!-- dni -->
+                                <div class="form-group row">
+                                    <label for="conddni" class="col-sm-2 control-label">DNI</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control formtosave fieldunique" id="conddni" name="conddni" placeholder="DNI" data-name="DNI">
+                                    </div>
+                                </div>
+                                <!-- nombre -->
+                                <div class="form-group row">
+                                    <label for="condnombre" class="col-sm-2 control-label">Nombre</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control formtosave" id="condnombre" name="condnombre" placeholder="Nombre" data-name="Nombre">
+                                    </div>
+                                </div>
+                                <!-- licencia -->
+                                <div class="form-group row">
+                                    <label for="condlicencia" class="col-sm-2 control-label">Licencia</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control formtosave" id="condlicencia" name="condlicencia" placeholder="Licencia" data-name="Licencia">
+                                    </div>
+                                </div>
+                                <!-- telf_fijo -->
+                                <div class="form-group row">
+                                    <label for="condtfijo" class="col-sm-2 control-label">Teléfono fijo</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control formtosave" id="condtfijo" name="condtfijo" placeholder="Teléfono fijo" data-name="Teléfono fijo">
+                                    </div>
+                                </div>
+                                <!-- telf_movil -->
+                                <div class="form-group row">
+                                    <label for="condcelular" class="col-sm-2 control-label">Celular</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control formtosave" id="condcelular" name="condcelular" placeholder="Celular" data-name="Celular">
+                                    </div>
+                                </div>
+                                <!-- direccion -->
+                                <div class="form-group row">
+                                    <label for="conddirec" class="col-sm-2 control-label">Dirección</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control formtosave" id="conddirec" name="conddirec" placeholder="Dirección" data-name="Dirección">
+                                    </div>
+                                </div>
+                                <!-- foto de perfil -->
+                                <div class="form-group row">
+                                    <label for="condfoto" class="col-sm-2 control-label">Foto del Conductor</label>
+                                    <div class="col-sm-10">
+                                        <input type="file" class="form-control formtosave file_img_driver" id="condfoto" name="condfoto" placeholder="Ruta al archivo" data-name="Foto">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vehicle -->
+                    <div class="panel panel-default thumbnail">
+                        <div class="panel-heading">Vehículo</div>
+                        <div class="panel-body">
+                            <div>
+                                <!-- placa -->
+                                <div class="form-group row">
+                                    <label for="vehplaca" class="col-sm-2 control-label">Placa</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control formtosave fieldunique" id="vehplaca" name="vehplaca" placeholder="Placa <Ej. D0H715>" data-name="Placa">
+                                    </div>
+                                </div>
+                                <!-- marca -->
+                                <div class="form-group row">
+                                    <label for="vehmarca" class="col-sm-2 control-label">Marca</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control formtosave" id="vehmarca" name="vehmarca" placeholder="Marca <Ej. Toyota>" data-name="Marca">
+                                    </div>
+                                </div>
+                                <!-- modelo -->
+                                <div class="form-group row">
+                                    <label for="vehmodelo" class="col-sm-2 control-label">Modelo</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control formtosave" id="vehmodelo" name="vehmodelo" placeholder="Modelo <Ej. Corolla>" data-name="Modelo">
+                                    </div>
+                                </div>
+                                <!-- color -->
+                                <div class="form-group row">
+                                    <label for="vehcolor" class="col-sm-2 control-label">Color</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control formtosave" id="vehcolor" name="vehcolor" placeholder="Color <Ej. Blanco>" data-name="Color">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <label class="checkbox-inline">
+                                        <input type="checkbox" id="vehsetame" name="vehsetame">  <b>Inscrito en Setame</b>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>  
+            </div> <!-- modal-body -->
+            <div class="modal-footer" id="pnlRegisterQR_footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button id="btnSaveQR" type="button" class="btn btn-primary btnactionscommon">Guardar</button>
+            </div> <!-- modal-footer -->
+        </div>
+        </div>
+    </div>
+
+{% end %}
+
+{% block footer %}{% include "partials/footer.html" %}{% end %}
+
+{% block scriptbody %}
+    
+    <script id="uuids_available_template" type="text/x-handlebars-template">
+        {{!#if UuidsAvailable}}  
+                {{!#UuidsAvailable}} 
+                    <tr>
+                        <td>{{!qr_number}}</td>
+                        <td>{{!truncate qr_uuid 7}}</td>               
+                        <td><a href="javascript:void(0);" onclick="registerDriver('{{!qr_number}}','{{!qr_uuid}}');" class="btn btn-primary">Registrar</a></td>
+                    </tr>  
+                {{!/UuidsAvailable}}                           
+        {{!else}}
+          <tr><td>Sin Registros</td></tr>
+        {{!/if}}        
+    </script>
+
+    <script id="uuids_registered_template" type="text/x-handlebars-template">
+        {{!#if UuidsRegistered}}  
+                {{!#UuidsRegistered}} 
+                    <tr>
+                        <td><a href='/unidad/{{!qr_uuid}}' target='_blank'>{{!truncate qr_uuid 7}}</a></td>
+                        <td>{{!placa}}</td>               
+                        <td>{{!dni}}</td>               
+                    </tr>  
+                {{!/UuidsRegistered}}                          
+        {{!else}}
+          <tr><td>Sin Registros</td></tr>
+        {{!/if}}        
+    </script>
+
+    <script type="text/javascript">
+
+        Handlebars.registerHelper('roundnumber', function (input) {
+            return parseFloat(input).toFixed(2);
+        });
+
+        Handlebars.registerHelper('truncate', function (_input, _length) {
+            return _input.substr(0,_length);
+        });
+
+        function renderUuidsAvailable(data) {
+            $("#tbuuids_available tbody").html("");
+            var templatehtml = $("#uuids_available_template").html();
+            var sourcehtml = Handlebars.compile(templatehtml);
+            $("#tbuuids_available tbody").html(sourcehtml({ UuidsAvailable: data }));
+        }   
+
+        function renderUuidsRegistered(data) {
+            $("#tbuuids_registered tbody").html("");
+            var templatehtml = $("#uuids_registered_template").html();
+            var sourcehtml = Handlebars.compile(templatehtml);
+            $("#tbuuids_registered tbody").html(sourcehtml({ UuidsRegistered: data }));
+        }     
+
+        function cleanInputsPopup(){
+            $(".formtosave").val("");
+            $(".formtosave").removeClass("inputloader");
+            $(".formtosave").removeClass("inputerror");
+            $(".formtosave").removeClass("inputcheck");
+            $(".formtosave").removeAttr("data-field-exist");
+        }
+
+        function registerDriver (qr_number,qr_uuid) {            
+            $("#hdnqrnumber").val(qr_number);
+            $("#hdnqruuid").val(qr_uuid);
+            var title = "QR UUID: {0}".format(qr_uuid);
+            $("#pnlRegisterQR_title").text(title);
+            $("#pnlRegisterQR").modal("show");               
+            cleanInputsPopup();
+            main_ns.msgHide();      
+        }    
+
+        var array_available = {% raw json_available %};
+        renderUuidsAvailable(array_available);
+        renderUuidsRegistered({% raw json_registered %});        
+        $("#hdnNumberQrsAvailable").val(array_available.length);
+
+    </script>
+
+    <script type="text/javascript">        
+
+        function validateImageValues($obj) {
+            var file = getFileName($obj.val());
+            var flag = false;
+            if (file !== null) {
+                var extension = file.substr((file.lastIndexOf('.') + 1)).toLowerCase();
+                switch (extension) {
+                    case 'jpg':
+                    case 'jpeg':
+                        flag = true;
+                        break;
+                }
+            }
+            else{
+                main_ns.msgError("Imagen es obligatoria");
+                $(".file_img_driver").focus();
+                return false;
+            }   
+
+            var file_size = getFileSizeMB($obj.attr("id"));
+
+            if (!flag) {
+                main_ns.msgError("Extension del archivo incorrecta");
+                $(".file_img_driver").focus();
+                return false;
+            }
+            else if (file_size > 1) {
+                main_ns.msgError("El máximo de tamaño permitido para su imagen es de 1000 KB");
+                $(".file_img_driver").focus();
+                return false;
+            }
+            else {              
+                return true;
+            }
+        }
+
+        function validateForm()
+        {
+            var flagsave = true;
+            $(".formtosave").each(function (index, data) {
+
+                switch (data.nodeName) {
+                    case "SELECT":
+                    case "INPUT":
+                        if (data.value.trim() === ""){
+                            data.focus();
+                            flagsave = false;
+                            main_ns.msgError("{0} es obligatorio".format($(data).attr("data-name")));
+                            return false;
+                        }
+                        else if($(data).is("[data-field-exist]") && $(data).attr("data-field-exist") === "true"){
+                            data.focus();
+                            flagsave = false;
+                            main_ns.msgError("{0} ya se encuentra registrado".format($(data).attr("data-name")));
+                            return false;
+                        }                           
+                        break;                  
+                }               
+            });
+            return flagsave;
+        }              
+        
+        $(document).on("change", ".file_img_driver", function () {
+            return validateImageValues($(this));            
+        });
+
+        $(document).on("click","#btnSaveQR", function(){
+            var flagsave = true;
+            flagsave = validateImageValues($(".file_img_driver"));
+            if (!flagsave) {
+                return flagsave;
+            }
+
+            flagsave = validateForm();
+            
+            if (flagsave) {
+                $("#frmRegiterQr").submit();
+            }        
+        });
+        
+        $(document).on("change",".fieldunique", function(){
+            var idfield = $(this).attr("id");
+            var valuefield = $(this).val().trim();
+            var selectorid = "#{0}".format(idfield);
+
+            if (valuefield !== "")
+            {
+                request_get_json("/verify/unique/",{type:idfield, value:valuefield}, 
+                    function(data){
+                        var rs = data[0];                        
+                        if (rs === 0){
+                            $(selectorid).removeClass("inputloader");
+                            $(selectorid).removeClass("inputerror");
+                            $(selectorid).addClass("inputcheck");                   
+                            $(selectorid).removeAttr("data-field-exist");
+                            main_ns.msgHide();
+                        }
+                        else{
+                            $(selectorid).removeClass("inputloader");
+                            $(selectorid).removeClass("inputcheck");
+                            $(selectorid).addClass("inputerror");
+                            $(selectorid).attr("data-field-exist","true");
+                            $(selectorid).focus();                  
+                            main_ns.msgError("{0} ya se encuentra registrado".format($(selectorid).attr("data-name")));
+                        }
+                    }, 
+                    null, 
+                    function(data){ 
+                        $(selectorid).addClass("inputloader"); 
+                    }, 
+                    function(data){ 
+                        $(selectorid).removeClass("inputloader"); 
+                    }
+                );    
+            }
+            else
+            {
+                $(selectorid).removeClass("inputloader");
+                $(selectorid).removeClass("inputerror");
+                $(selectorid).removeClass("inputcheck");
+                $(selectorid).removeAttr("data-field-exist");
+            }
+            
+        });        
+    
+        $(document).ready(function(){
+             if (getCookie("qrsavedbycompany") !== "") {
+                main_ns.msgSuccess("QR Registrado");
+                deleteCookie("qrsavedbycompany");
+            }            
+        });       
+
+    </script>
+{% end %}

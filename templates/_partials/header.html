@@ -1,0 +1,8 @@
+<div id="header" class="container">
+      <div id="" style="float:left;margin: 15px 0px 8px 0px;font-weight: bold;" >Bienvenido: {{ user_name }}</div>
+      <a class="dropdown" style="float:right;margin: 15px 0px 8px 0px;font-weight: bold;" href="/auth/logout/">Salir</a>
+      <div style="clear:both;"></div>
+      {% if rol == "staff" %}
+      {% include "menu_staff.html" %}
+      {% end %}
+</div>

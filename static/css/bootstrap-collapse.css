@@ -1,0 +1,50 @@
+﻿
+.panel-group2 {
+    width: 430px;
+    z-index: 100;
+    -webkit-backface-visibility: hidden;
+    -webkit-transform: translateX(-100%) rotate(-90deg);
+    -webkit-transform-origin: right top;
+    -moz-transform: translateX(-100%) rotate(-90deg);
+    -moz-transform-origin: right top;
+    -o-transform: translateX(-100%) rotate(-90deg);
+    -o-transform-origin: right top;
+    transform: translateX(-100%) rotate(-90deg);
+    transform-origin: right top;
+}
+
+.panel-heading2 {
+    width: 430px;
+}
+
+.panel-title {
+    height: 18px;
+}
+
+.panel-title a {
+    float: right;
+    text-decoration: none;
+    padding: 10px 430px;
+    margin: -10px -430px;
+}
+
+.panel-body2 {
+    height: 830px;
+}
+
+.panel-group2 img {
+    -webkit-backface-visibility: hidden;
+    -webkit-transform: translateX(0%) rotate(90deg);
+    -webkit-transform-origin: left top;
+    -moz-transform: translateX(0%) rotate(90deg);
+    -moz-transform-origin: left top;
+    -o-transform: translateX(0%) rotate(90deg);
+    -o-transform-origin: left top;
+    transform: translateX(0%) rotate(90deg);
+    transform-origin: left top;
+}
+
+.panel-group2 .panel img {
+    margin-left: 400px;
+    position: absolute;
+}

@@ -1,0 +1,326 @@
+{% extends base.html %}
+
+{% block title %}Registro de QR{% end %}
+
+{% block header %}{% include "partials/header.html" %}{% end %}
+
+{% block body %}
+	<div class="container container-fluid">
+	    
+	    <!-- Company -->
+		    <form action="/registro/" class="form-horizontal" method="post" accept-charset="utf-8" enctype="multipart/form-data" role="form">
+		    	{% module xsrf_form_html() %}
+		        <h1 class="blockleft">Registro</h1>
+		        <a class="btn btn-info btn-lg blockright btn-item-back" href="/dashboard/">Regresar</a>
+		        <div class="blockclear"></div>
+		        <div class="panel panel-default thumbnail">			            
+			            <div class="panel-body">
+			                <div class="form-group">
+			                    <label class="col-sm-2 control-label">UUID</label>
+			                    <div class="col-sm-10">			                        
+			                        <input id="txtUUID" name="qruuid" class="form-control" readonly>
+			                        <input id="user_email" name="user_email" type="hidden" value="{{ email }}">
+			                        <input id="numUUID" name="numUUID" type="hidden" value="">
+			                    </div>
+			                </div>
+			            </div>
+			        </div>
+		  
+	    		<div class="panel panel-default thumbnail">			            
+		            <div class="panel-body">
+		                <div class="form-group">
+		                    <label for="ddlperiod" class="col-sm-2 control-label">Vencimiento</label>
+		                    <div class="col-sm-10">
+		                        <select class="form-control formtosave" id="ddlperiod" name="ddlperiod" data-name="Vencimiento">
+		                          <option value="">Seleccionar</option>
+		                          <option value="1">1 mes</option>
+		                          <option value="2">2 meses</option>
+		                          <option value="3">3 meses</option>
+		                          <option value="4">4 meses</option>
+		                          <option value="6">6 meses</option>
+		                          <option value="12">1 Año</option>
+		                        </select>
+		                    </div>
+		                </div>
+		                <div class="form-group">
+	                        <label for="selected_date" class="col-sm-2 control-label">Fecha</label>
+	                        <div class="col-sm-10">
+	                            <input type="text" class="form-control" id="selected_date" name="selected_date" placeholder="Fecha" data-name="Fecha" readonly>
+	                            <input id="due_date_uni" name="due_date_uni" type="hidden">
+	                        </div>
+	                    </div>
+		            </div>
+		        </div>			
+		        
+		        <!-- Driver -->
+		        <div class="panel panel-default thumbnail">
+		            <div class="panel-heading">Conductor</div>
+		            <div class="panel-body">
+		                <div>
+		                    <!-- dni -->
+		                    <div class="form-group">
+		                        <label for="conddni" class="col-sm-2 control-label">DNI</label>
+		                        <div class="col-sm-10">
+		                            <input type="text" class="form-control formtosave fieldunique" id="conddni" name="conddni" placeholder="DNI" data-name="DNI">
+		                        </div>
+		                    </div>
+		                    <!-- nombre -->
+		                    <div class="form-group">
+		                        <label for="condnombre" class="col-sm-2 control-label">Nombre</label>
+		                        <div class="col-sm-10">
+		                            <input type="text" class="form-control formtosave" id="condnombre" name="condnombre" placeholder="Nombre" data-name="Nombre">
+		                        </div>
+		                    </div>
+		                    <!-- licencia -->
+		                    <div class="form-group">
+		                        <label for="condlicencia" class="col-sm-2 control-label">Licencia</label>
+		                        <div class="col-sm-10">
+		                            <input type="text" class="form-control formtosave" id="condlicencia" name="condlicencia" placeholder="Licencia" data-name="Licencia">
+		                        </div>
+		                    </div>
+		                    <!-- telf_fijo -->
+		                    <div class="form-group">
+		                        <label for="condtfijo" class="col-sm-2 control-label">Teléfono fijo</label>
+		                        <div class="col-sm-10">
+		                            <input type="text" class="form-control formtosave" id="condtfijo" name="condtfijo" placeholder="Teléfono fijo" data-name="Teléfono fijo">
+		                        </div>
+		                    </div>
+		                    <!-- telf_movil -->
+		                    <div class="form-group">
+		                        <label for="condcelular" class="col-sm-2 control-label">Celular</label>
+		                        <div class="col-sm-10">
+		                            <input type="text" class="form-control formtosave" id="condcelular" name="condcelular" placeholder="Celular" data-name="Celular">
+		                        </div>
+		                    </div>
+		                    <!-- direccion -->
+		                    <div class="form-group">
+		                        <label for="conddirec" class="col-sm-2 control-label">Dirección</label>
+		                        <div class="col-sm-10">
+		                            <input type="text" class="form-control formtosave" id="conddirec" name="conddirec" placeholder="Dirección" data-name="Dirección">
+		                        </div>
+		                    </div>
+		                    <!-- foto de perfil -->
+		                    <div class="form-group">
+		                        <label for="condfoto" class="col-sm-2 control-label">Foto del Conductor</label>
+		                        <div class="col-sm-10">
+		                            <input type="file" class="form-control formtosave file_img_driver" id="condfoto" name="condfoto" placeholder="Ruta al archivo" data-name="Foto">
+		                        </div>
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+
+		        <!-- Vehicle -->
+		        <div class="panel panel-default thumbnail">
+		            <div class="panel-heading">Vehículo</div>
+		            <div class="panel-body">
+		                <div>
+		                    <!-- placa -->
+		                    <div class="form-group">
+		                        <label for="vehplaca" class="col-sm-2 control-label">Placa</label>
+		                        <div class="col-sm-10">
+		                            <input type="text" class="form-control formtosave fieldunique" id="vehplaca" name="vehplaca" placeholder="Placa <Ej. D0H715>" data-name="Placa">
+		                        </div>
+		                    </div>
+		                    <!-- marca -->
+		                    <div class="form-group">
+		                        <label for="vehmarca" class="col-sm-2 control-label">Marca</label>
+		                        <div class="col-sm-10">
+		                            <input type="text" class="form-control formtosave" id="vehmarca" name="vehmarca" placeholder="Marca <Ej. Toyota>" data-name="Marca">
+		                        </div>
+		                    </div>
+		                    <!-- modelo -->
+		                    <div class="form-group">
+		                        <label for="vehmodelo" class="col-sm-2 control-label">Modelo</label>
+		                        <div class="col-sm-10">
+		                            <input type="text" class="form-control formtosave" id="vehmodelo" name="vehmodelo" placeholder="Modelo <Ej. Corolla>" data-name="Modelo">
+		                        </div>
+		                    </div>
+		                    <!-- color -->
+		                    <div class="form-group">
+		                        <label for="vehcolor" class="col-sm-2 control-label">Color</label>
+		                        <div class="col-sm-10">
+		                            <input type="text" class="form-control formtosave" id="vehcolor" name="vehcolor" placeholder="Color <Ej. Blanco>" data-name="Color">
+		                        </div>
+		                    </div>
+		                    <div class="form-group">
+		                        <div class="col-sm-offset-2 col-sm-10">
+		                            <label class="checkbox-inline">
+		                            <input type="checkbox" id="vehsetame" name="vehsetame">  <b>Inscrito en Setame</b>
+		                            </label>
+		                        </div>
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+
+		        <div class="btn-actions-footer">
+		        	<button id="btnsave" type="submit" class="btn btn-primary btn-lg">Registrar</button>
+		        	<a class="btn btn-info btn-lg blockright" href="/dashboard/">Cancelar</a>
+		        </div>	        
+
+		        <br><br>
+		    </form>	    
+	</div>
+{% end %}
+
+{% block footer %}{% include "partials/footer.html" %}{% end %}
+
+{% block scriptbody %}
+	<script src="{{ static_url("js/typeahead.bundle.min.js") }}"></script>
+	<script>		
+
+		function validateImageValues($obj) {
+		    var file = getFileName($obj.val());
+		    var flag = false;
+		    if (file !== null) {
+		        var extension = file.substr((file.lastIndexOf('.') + 1)).toLowerCase();
+		        switch (extension) {
+		            case 'jpg':
+		            case 'jpeg':
+		                flag = true;
+		                break;
+		        }
+		    }
+		    else{
+		    	main_ns.msgError("Imagen es obligatoria");
+		    	$(".file_img_driver").focus();
+		        return false;
+		    }	
+
+		    var file_size = getFileSizeMB($obj.attr("id"));
+
+		    if (!flag) {
+		        main_ns.msgError("Extension del archivo incorrecta");
+		        $(".file_img_driver").focus();
+		        return false;
+		    }
+		    else if (file_size > 1) {
+		        main_ns.msgError("El máximo de tamaño permitido para su imagen es de 1000 KB");
+		        $(".file_img_driver").focus();
+		        return false;
+		    }
+		    else {		        
+		        return true;
+		    }
+		}
+
+		function validateForm()
+		{
+			var flagsave = true;
+			$(".formtosave").each(function (index, data) {
+
+				switch (data.nodeName) {
+					case "SELECT":
+					case "INPUT":
+						if (data.value.trim() === ""){
+							data.focus();
+							flagsave = false;
+							main_ns.msgError("{0} es obligatorio".format($(data).attr("data-name")));
+							return false;
+						}
+						else if($(data).is("[data-field-exist]") && $(data).attr("data-field-exist") === "true"){
+							data.focus();
+							flagsave = false;
+							main_ns.msgError("{0} ya se encuentra registrado".format($(data).attr("data-name")));
+							return false;
+						}							
+						break;					
+				}				
+			});
+			return flagsave;
+		}		
+		
+		$("#txtUUID").val(getParameterByName("uuid").toUpperCase());
+		$("#numUUID").val(getParameterByName("num_uuid").toUpperCase());
+
+		$(document).ready(function () {
+			$("#qruuid").typeahead({
+			 hightlight: true,
+			 minLength: 3
+			},
+			{
+			    displayKey: 'value',
+			    source: function(query, process) {
+				$.ajax({
+				    url:"/search/uuid/",
+				    datatype:"json",
+				    data:{search:query},
+		            success: function(data) {
+		                var temp = $.map(data, function(id){ return {value: id}; });
+		                return process(temp);
+		            }
+				});
+			    }
+			});
+		});
+
+		$(document).on("change", ".file_img_driver", function () {
+            return validateImageValues($(this));            
+        });
+
+		$(document).on("click","#btnsave", function(){
+			var flagsave = true;
+			flagsave = validateImageValues($(".file_img_driver"));
+			if (!flagsave) {
+				return flagsave;
+			}
+
+			flagsave = validateForm();
+			return flagsave;			
+		});
+		
+		$(document).on("change",".fieldunique", function(){
+			var idfield = $(this).attr("id");
+			var valuefield = $(this).val().trim();
+			if (valuefield !== "")
+			{
+				request_get_json("/verify/unique/",{type:idfield, value:valuefield}, function(data){
+					var rs = data[0];
+					
+					if (rs === 0){
+						$("#{0}".format(idfield)).removeClass("inputloader");
+						$("#{0}".format(idfield)).removeClass("inputerror");
+						$("#{0}".format(idfield)).addClass("inputcheck");					
+						$("#{0}".format(idfield)).removeAttr("data-field-exist");
+					}
+					else{
+						$("#{0}".format(idfield)).removeClass("inputloader");
+						$("#{0}".format(idfield)).removeClass("inputcheck");
+						$("#{0}".format(idfield)).addClass("inputerror");
+						main_ns.msgError("{0} ya se encuentra registrado".format($("#{0}".format(idfield)).attr("data-name")));
+						$("#{0}".format(idfield)).focus();					
+						$("#{0}".format(idfield)).attr("data-field-exist","true");
+					}
+				}, null, function(data){ $("#{0}".format(idfield)).addClass("inputloader"); }, function(data){ $("#{0}".format(idfield)).removeClass("inputloader"); });	
+			}
+			else
+			{
+				$("#{0}".format(idfield)).removeClass("inputloader");
+				$("#{0}".format(idfield)).removeClass("inputerror");
+				$("#{0}".format(idfield)).removeClass("inputcheck");
+				$("#{0}".format(idfield)).removeAttr("data-field-exist");
+			}
+			
+		});
+
+		$("#ddlperiod").on("change", function(){
+			if ($(this).val()!=="") {
+				var months = parseInt($(this).val(),10);
+				var cad_date = getDateFormattedRegional(addMonthToDate(new Date(),months));
+				var cad_date_uni = getDateFormattedStandar(addMonthToDate(new Date(),months));
+				$("#selected_date").val(cad_date);
+				$("#due_date_uni").val(cad_date_uni);
+			}
+			else{
+				$("#selected_date").val("");
+				$("#due_date_uni").val("");
+			}
+			
+		});
+
+	</script>
+{% end %}
+
+
+

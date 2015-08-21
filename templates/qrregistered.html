@@ -1,0 +1,85 @@
+{% extends base.html %}
+
+{% block title %}QRs Registrados{% end %}
+{% block header %}{% include "partials/header.html" %}{% end %}
+
+{% block body %}
+
+    <div class="container padded">
+        <div class="row">    
+            <div class="col-md-3">
+                <div class="input-group">
+                    <input id="txtInputSearch" class="form-control" type="text" placeholder="Buscar">
+                    <div class="input-group-btn">
+                        <button id="btnsearch" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>                        
+                    </div>
+                </div>
+            </div>      
+            <div class="col-md-9">
+                <a class="btn btn-info btn-lg blockright" href="/dashboard/">Regresar</a>         
+            </div>                     
+        </div>
+    </div>
+
+    <div class="container padded-bottom">
+        <div id="contentQrRegistered"></div>
+    </div>
+   
+{% end body %}
+
+{% block footer %}{% include "partials/footer.html" %}{% end %}
+
+{% block scriptbody %}
+      <script src="{{ static_url("js/jquery.numeric.js") }}"></script>
+      <script src="{{ static_url("js/jquery.numeric.start.js") }}"></script>      
+
+      <script id="qrregistered_template" type="text/x-handlebars-template">
+        {{!#if QrRegistered}}          
+            <table id="tbqrregistered" class="table table-bordered table-hover table-common-idtaxi">
+                <thead>
+                    <tr>
+                        <th>Licencia</th>
+                        <th>Placa</th>
+                        <th>Dni</th>                        
+                        <th>QR</th>
+                        <th>Vencimiento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {{!#QrRegistered}} 
+                    <tr>
+                        <td>{{!package_id}}</td>
+                        <td>{{!vehicle_id}}</td>
+                        <td>{{!driver_id}}</td>                        
+                        <td><a href='/unidad/{{!qr_uuid}}' target='_blank'>{{!qr_uuid}}</a></td>
+                        <td>{{!due_date}}</td>
+                    </tr>  
+                {{!/QrRegistered}}         
+                </tbody>
+            </table>                 
+        {{!else}}
+          <p class="">No se encontro qrs vendidos.</p>
+        {{!/if}}        
+      </script>
+
+      <script>
+
+        function renderQrRegistered(data) {
+            $("#contentQrRegistered").html("");
+            var templatehtml = $("#qrregistered_template").html();
+            var sourcehtml = Handlebars.compile(templatehtml);
+            $("#contentQrRegistered").html(sourcehtml({ QrRegistered: data }));
+        }        
+
+        $("#btnsearch").on("click", function(){
+            var input = $("#txtInputSearch").val();           
+            request_get_json("/qrs/search/", {input:input}, function(data){
+                renderQrRegistered(data);
+            });
+        });
+
+        var array_qrs = {% raw array_json %};
+        renderQrRegistered(array_qrs);
+
+      </script>
+{% end scriptbody %}

@@ -1,0 +1,89 @@
+﻿<div class="page-header">
+    <h2>Artículos</h2>
+</div>
+<br/>
+<div class="btn-group"><button id="btnCreate" class="btn btn-primary" ><i class="glyphicon glyphicon-plus"></i> Crear nuevo material</button></div>
+<br/>
+<form class="search pull-right">
+    <input type="text" class="seeker search-query" placeholder="Buscar" data-table="material_table" data-fields="code name" >
+</form>
+<br>
+<div class="thumbnail">
+    <form id="material" name="material" class="form-horizontal" rel="">
+        <br />
+        <input type="hidden" id="hdn_id">
+        <div class="control-group">
+            <table class="tb_materials table" id="tb_materials">
+                <thead>
+                    <tr>
+                        <th style="display:none;">_id</th>
+                        <th>
+                            Codigo                      
+                        </th>
+                        <th>
+                            Descripcion                        
+                        </th>
+                        <th>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="tb_materials_data">                    
+                    {{#if ListData}}
+                        {{#ListData}}
+                            <tr id="{{_id}}">
+                                <td style="display:none;" data-head="_id" data-type="readOnly">{{_id}}</td>
+                                <td data-head="code">{{code}}</td>
+                                <td data-head="name">{{name}}</td>
+                                <td>
+                                    <button type="button" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    </button>
+                                    <div class="clearfix"></div>
+                                </td>
+                            </tr>
+                        {{/ListData}}
+                    {{else}}
+                        <tr>
+                            <td{{lang "empty"}}></td>
+                        </tr>
+                    {{/if}}
+
+                </tbody>
+            </table>
+        </div>
+    </form>
+</div>
+
+
+<div class="modal fade" id="pnlArticulo" tabindex="-1" role="dialog" aria-labelledby="myModalPlaneLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3>Mantenimiento de Producto</h3>
+            </div>
+            <div class="modal-body">
+                <div id="box_material_new">                   
+                    <div class="form-horizontal">
+                        <br>
+                        <div class="control-group">
+                            <label class="control-label" for="material_code">Código</label>
+                            <div class="controls"><input type="text" id="material_code" placeholder="Código"></div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="material_name">Descripcion</label>
+                            <div class="controls"><input type="text" id="material_name" placeholder="Descripcion"></div>
+                        </div>               
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer align-center">
+                <button id="btnSelectSop" type="button" class="btn btn-primary btnactionscommon">Aceptar</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>   
+            </div>
+        </div>
+    </div>
+</div>

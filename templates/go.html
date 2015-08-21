@@ -1,0 +1,92 @@
+{% extends base.html %}
+
+{% block title %}Viajo en el vehículo de placa {{ auto_plate }}{% end %}
+
+{% block style %}
+  <style type="text/css">
+    body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-image: url("/static/bg_taxi_small_30px.jpg")
+    }
+    .sidebar-nav {
+    padding: 9px 0;
+    }
+    .controls > label{
+    text-align: left !important;
+    }
+    table > thead > tr > th > .thumbnail { width: 110px;}
+    table > thead > tr > th { text-align: center !important;}
+    .thumbnail { text-align: center;}
+    .thumbnailfixed{
+      display: inline-block !important;
+      margin-bottom: 0px !important;
+    }
+  </style>
+{% end %}
+
+{% block body %}
+  <div class="container thumbnail" style="background-color: white;">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th><img src="/static/logo.png" /></th>
+          <th><div class="thumbnail thumbnailfixed"><img src="/{{ foto_perfil }}" /></div></th>
+        </tr>
+      </thead>
+    </table>
+    <div class="container thumbnail" style="background-color: white;">
+      <h3>
+	<p>Viajo en el vehículo con placa <b> {{ auto_plate }}</b> </p>
+	<p>Tomé el servicio el {{ qtime }} {% if address %}, en {{ address }} {% end %}</p>
+	<p>El nombre del taxista es <b> {{ drivers_name }}</b> {% if desc_empresa %}
+	  de {{desc_empresa}} {% end %}</p>
+	<p>Puedes ver a continuación sus datos ...</p>
+	<br/>
+      </h3>
+    </div>
+
+    <table class="table table-striped">
+      <tbody>
+
+	{% if desc_empresa %}
+	<tr>
+	  <td><b>Empresa</b></td>
+	  <td><div>{{ desc_empresa }}</div></td>
+	</tr>
+	{% end %}
+	<tr>
+	  <td><b>Inscrito en Setame</b></td>
+	  <td> {{ setame }} </td>
+	</tr>
+	<tr>
+	  <td><b>Conductor</b></td>
+	  <td>{{ drivers_name }}</td>
+	</tr>
+	<tr>
+	  <td><b>DNI</b></td>
+	  <td>{{ dni }}</td>
+	</tr>
+	<tr>
+	  <td><b>Licencia de conducir</b></td>
+	  <td>{{ licencia }}</td>
+	</tr>
+	<tr>
+	  <td><b>Vehículo</b></td>
+	  <td>{{ desc_vehiculo }}</td>
+	</tr>
+	<tr>
+	  <td><b>Placa</b></td>
+	  <td>{{ auto_plate }}</td>
+	</tr>
+	<tr>
+	  <td><b>Teléfono</b></td>
+	  <td>{{ home_phone }}</td>
+	</tr>
+	
+      </tbody>
+    </table>
+    <hr>
+    <p>&copy; 2014 IdTaxi</p>
+  </div>
+{% end %}

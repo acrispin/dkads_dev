@@ -1,0 +1,5 @@
+*.pyc
+*.jpeg
+*.pjpeg
+*.x-png
+logs/*.log*

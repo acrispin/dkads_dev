@@ -1,0 +1,107 @@
+{% extends base.html %}
+
+{% block head %}
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<title>Default title</title>
+<link href="/css/bootstrap.min.css" rel="stylesheet">
+<link href="/css/idtaxi.css" rel="stylesheet">
+
+{% end %}
+
+{% block body %}
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/es_LA/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div class="row">
+  <div class="col-xs-12 col-sm-8 col-lg-3">
+    <div class="thumbnail">
+      <img src="/static/salvador.jpg" class="img-responsive img-rounded">
+      <div class="caption">
+	<table class="table table-bordered">
+	<tr>
+	  <td>Empresa</td>
+	  <td>{{ desc_empresa }}</td>
+	</tr>
+	<tr>
+	<tr>
+	  <td>Conductor</td>
+	  <td>{{ drivers_name }}</td>
+	</tr>
+	<tr>
+	  <td>DNI</td>
+	  <td>{{ dni }}</td>
+	</tr>
+	<tr>
+	  <td>Licencia de conducir</td>
+	  <td>{{ licencia }}</td>
+	</tr>
+	<tr>
+	  <td>Vehículo</td>
+	  <td>{{ desc_vehiculo }}</td>
+	</tr>
+	<tr>
+	  <td>Placa</td>
+	  <td>{{ auto_plate }}</td>	    
+	</tr>
+	<tr>
+	  <td>Origen</td>
+	  <td>
+	    <script>
+	      var lat = 0.0;
+	      var lng = 0.0;
+
+              function reverseGeocode(latitude, longitude) {             
+                 var apiURL = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latitude + ',' + longitude + '&sensor=true';
+                 $.getJSON(apiURL, function (data) {
+                     cell = document.getElementById("tdorigen");
+                     if (data.status = "OK") {
+                         console.log(data);
+                         cell.childNodes[0].data = data.results[0].formatted_address;
+                     }
+                     else {
+                          cell.childNodes[0].data = "Información no disponible";
+                     }
+                 });
+             }
+             positionCallback = function (position) {
+                 var address;
+                 var res;
+                 lat = position.coords.latitude;
+                 lng = position.coords.longitude;
+                 res = reverseGeocode(lat, lng);
+             }
+
+	      if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(function(position) {
+              lat = position.coords.latitude;
+              lng = position.coords.longitude;
+              });
+              document.write(lat + ' / ' + lng);
+	      }
+	      else {
+	        document.write("Habilitel el GPS para poder obtener su ubicación.");
+	      }
+	    </script>
+	  </td>
+	</tr>
+	<tr>
+	  <td>Hora</td>
+	  <td>{{ qtime }}</td>
+	</tr>
+	<!-- <tr> -->
+	<!--   <td>Teléfono</td> -->
+	<!--   <td></td> -->
+	<!-- </tr> -->
+      </div>
+      </table>
+      <div class="fb-share-button" data-href="http://developers.facebook.com/docs/plugins/" data-type="button"></div>
+    </div>
+  </div>
+</div>
+{% end %}

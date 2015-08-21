@@ -1,0 +1,121 @@
+{% extends base.html %}
+
+{% block title %}Distribuidor{% end %}
+{% block header %}{% include "partials/header.html" %}{% end %}
+{% block body %}
+<div class="container padded">
+  <div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-2 col-md-offset-2"><a href="/dealers/new/"><button type="button" class="btn">Agregar Distribuidor <span class="glyphicon glyphicon-plus"></span></button></a>
+    </div>
+    <div class="col-md-3 col-md-offset-1">
+      <form class="input-group" method="get" action="#">
+	<input class="form-control" type="text" placeholder="Buscar distribuidor">
+	<div class="input-group-btn">
+	  <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+	</div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="container padded-bottom">
+  {% if not dealers %}
+  <em>No hay ningún distribuidor registrado aún.</em>
+  {% else %}
+  <!-- {% for dealer in dealers %} -->
+  <!-- <div class="row"> -->
+  <!--   <div class="col-md-6">{{ dealer[0] }}</div> -->
+  <!--   <div class="col-md-2 col-md-offset-2"> -->
+  <!--     <a href="/dealers/modify/?d={{ dealer[0] }}"><button type="button" class="btn btn-default">Editar <span class="glyphicon glyphicon-edit"></span></button></a> -->
+  <!--   </div> -->
+  <!--   <div class="col-md-2"><a href="/dealers/addqrs/?d={{ dealer[0] }}"><button type="button" class="btn btn-default">Agregar QR <span class="glyphicon glyphicon-qrcode"></span></button></a></div> -->
+  <!-- </div>   -->
+  <!-- {% end %} -->
+
+  <table class="table" id="tbdealers">
+    <thead>
+      <tr>
+	<th>Nombre</th>
+	<th></th>
+	<th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for dealer in dealers %}
+      <tr>
+	<td>{{ dealer[0] }}</td>
+	<td><a href="/dealers/modify/?d={{ dealer[0] }}"><button type="button" class="btn btn-default">Editar <span class="glyphicon glyphicon-edit"></span></button></a></td>
+	<td><a href="javascript:void(0);" onclick="loadQR('{{ dealer[0] }}', '{{ dealer[1] }}');" class="btn btn-default">Cargar <span class="glyphicon glyphicon-shopping-cart"></span></a></td>
+      </tr>
+      {% end %}
+    </tbody>
+  </table>
+  {% end %}
+</div>
+
+<div class="modal fade" id="pnlLoadQrs" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" id="pnlLoadQrs_header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="pnlLoadQrs_title"></h4>
+      </div>
+      <div class="modal-body" id="pnlLoadQrs_body">
+        <br><br>
+        <input type="hidden" id="hdnEmail" class="formtosave">
+        <div class="form-horizontal">
+          <div class="form-group">
+            <label for="txtNumberQrs" class="col-sm-2 control-label">Numero de QRs</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control formtosave positive-integer" id="txtNumberQrs" name="txtNumberQrs" placeholder="Numero de QRs" data-name="Numero de QRs">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" id="pnlLoadQrs_footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button id="btnLoadQrs" type="button" class="btn btn-primary">Vender</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% end %}
+{% block footer %}{% include "partials/footer.html" %}{% end %}
+{% block scriptbody %}
+<script>
+     if (getCookie("newdealersaved") != "") {
+       $.notify("Distribuidor guardado", "success");
+       deleteCookie("newdealersaved");
+     }
+
+     function loadQR(email, dealer_name) {
+       $(".formtosave").val("");
+       $("#hdnEmail").val(email);
+       var title = "Cargarle QRs a {0}".format(dealer_name);
+       $("#pnlLoadQrs_header").text(title);
+       $("#pnlLoadQrs").modal("show");
+     }
+
+    $("#btnLoadQrs").on("click", function() {
+        var email = $("#hdnEmail").val();
+        var numqrs = $("#txtNumberQrs").val();
+        request_get_json("/dealers/recharge/", {dealer:email, numqrs:numqrs},
+            function(data) {
+                var rs = data[0];
+                if (rs === 0) {
+                    main_ns.msgSuccess("La operación se realizó con éxito.");
+                }
+                else {
+                    main_ns.msgError("No se pudo la realizar la operación");
+                }
+                $("#pnlLoadQrs").modal("hide");
+            },
+            function(data) {
+                $("#pnlSaleQrs").modal("hide");
+                main_ns.msgError("Sucedio un error en la recarga de QRs");
+            },
+            function(data) { $("#pnlLoadQrs_footer").addClass("inputloadercenter");},
+            function(data) { $("#pnlLoadQrs_footer").removeClass("inputloadercenter");});
+    });
+</script>
+{% end %}

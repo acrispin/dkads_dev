@@ -1,0 +1,135 @@
+{% extends base.html %}
+
+{% block title %}Viajo en el vehículo de placa {{ auto_plate }} conducido por {{drivers_name}} con DNI:{{dni}}{% end %}
+
+{% block style %}
+  <style type="text/css">
+    body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-image: url("/static/bg_taxi_small_30px.jpg")
+    }
+    .sidebar-nav {
+    padding: 9px 0;
+    }
+    .controls > label{
+    text-align: left !important;
+    }
+    table > thead > tr > th > .thumbnail { width: 110px;}
+    table > thead > tr > th { text-align: center !important;}
+    .thumbnail { text-align: center;}
+    .thumbnailfixed{
+      display: inline-block !important;      
+      margin-bottom: 0px !important; 
+    }
+  </style>
+{% end %}
+
+{% block body %}
+  <div class="container thumbnail" style="background-color: white;">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+  	<th><img src="/static/logo.png" /></th>
+  	<th><div class="thumbnail thumbnailfixed"><img src="/{{ foto_perfil }}" /></div></th>
+        </tr>
+      </thead>  
+      <tbody>
+        {% if desc_empresa %}
+        <tr>
+  	<td><b>Empresa</b></td>
+  	<td><div>{{ desc_empresa }}</div></td>
+        </tr>
+        {% end %}
+        <tr>
+  	<td><b>Inscrito en Setame</b></td>
+  	<td> {{ setame }} </td>
+        </tr>
+        <tr>
+  	<td><b>Conductor</b></td>
+  	<td>{{ drivers_name }}</td>
+        </tr>
+        <tr>
+  	<td><b>DNI</b></td>
+  	<td>{{ dni }}</td>
+        </tr>
+        <tr>
+  	<td><b>Licencia de conducir</b></td>
+  	<td>{{ licencia }}</td>
+        </tr>
+        <tr>
+  	<td><b>Vehículo</b></td>
+  	<td>{{ desc_vehiculo }}</td>
+        </tr>
+        <tr>
+  	<td><b>Placa</b></td>
+  	<td>{{ auto_plate }}</td>	    
+        </tr>
+        <tr>
+  	<td><b>Teléfono</b></td>
+  	<td>{{ home_phone }}</td>
+        </tr>
+        <tr>
+  	<td><b>Origen</b></td>
+  	<td id="tdorigen">
+  	  <script>
+  	      var lat = 0.0
+  	      var lng = 0.0;
+
+                function reverseGeocode(latitude, longitude) {
+                   var apiURL = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latitude + ',' + longitude + '&sensor=true';
+                   jQuery.getJSON(apiURL, function (data) {
+                       cell = document.getElementById("tdorigen");
+  	             scan_lat = document.getElementById("scan_latitude");
+  	             scan_lon = document.getElementById("scan_longitude");
+                       scan_add = document.getElementById("scan_address");
+
+                       if (data.status = "OK") {
+                           console.log(data);
+                           cell.childNodes[0].data = data.results[0].formatted_address;
+                           scan_add.value = data.results[0].formatted_address;
+  	                 scan_lat.value = latitude;
+  	                 scan_lon.value = longitude;
+                       }
+                       else {
+                            cell.childNodes[0].data = "Información no disponible";
+                       }
+                   });
+                }
+
+                positionCallback = function (position) {
+                var address;
+                var res;
+                lat = position.coords.latitude;
+                lng = position.coords.longitude;
+                reverseGeocode(lat, lng);
+  	      
+                }
+
+  	      if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(positionCallback);
+  	      }
+  	      else {
+  	        document.write("Habilitar el GPS para poder obtener su ubicación.");
+  	      }
+  	  </script>
+  	</td>
+        </tr>
+        <tr>
+  	<td><b>Hora</b></td>
+  	<td>{{ qtime }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <form method="post" action="/ep/">
+      <input type="hidden" name="uuid" value={{ uuid }}>
+      <input type="hidden" name="scan_time" value={{ timestamp }}>
+      <input id="scan_latitude" type="hidden" name="scan_latitude" value="0.0"/>
+      <input id="scan_longitude" type="hidden" name="scan_longitude" value="0.0"/>
+      <input id="scan_address"  type="hidden" name="scan_address" value="" />
+      <button type="submit" class="btn btn-primary btn-lg">Voy a tomar este taxi!</button>
+    </form>
+    <hr>
+    <p>&copy; 2014 IdTaxi</p>
+  </div>
+{% end %}

@@ -1,0 +1,21 @@
+{% extends base.html %}
+
+{% block body %}
+<div id="fb-root"></div>
+<div class="container" style="background-color:white;">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><img src="/static/logo.png" /></th>
+        <th><div class="thumbnail"></div></th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+  <p>Genial! Buen viaje</p>
+  <p>Si gustas puedes compartir esta información, basta con que compartas el link que te mostramos a continuación en tu red social favorita o envialo personalmente por medio de un mensaje.</p>
+  <a href={{ taxigo_url }}>{{ taxigo_url }}</a>
+  <hr>
+</div>
+{% end %}

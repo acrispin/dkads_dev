@@ -1,0 +1,100 @@
+{% extends base.html %}
+
+{% block title %}Licencias por Empresa{% end %}
+
+{% block header %}{% include "partials/header.html" %}{% end %}
+
+{% block body %}
+
+    <div class="container padded">
+        <div class="row">    
+            <div class="col-md-3">
+                <div class="input-group">
+                    <input id="txtInputSearch" class="form-control positive-integer" type="text" placeholder="Ingrese numero de licencia">
+                    <div class="input-group-btn">
+                        <button id="btnsearch" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>                        
+                    </div>
+                </div>
+            </div>      
+            <div class="col-md-9">
+                <a class="btn btn-info btn-lg blockright" href="/companies/">Regresar</a>         
+            </div>                     
+        </div>
+        <br>
+        <div id="contentInfoCompany">
+            <div id="infoComapnyName">
+                <span>Empresa: </span>
+                <span>{{companyname}}</span>
+            </div>
+            <br>
+            <div id="infoComapnyRuc">
+                <span>RUC: </span>
+                <span>{{ruc}}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container padded-bottom">
+        <div id="contentCompanyLicenses"></div>
+    </div>
+   
+{% end body %}
+
+{% block footer %}{% include "partials/footer.html" %}{% end %}
+
+{% block scriptbody %}
+      <script src="{{ static_url("js/jquery.numeric.js") }}"></script>
+      <script src="{{ static_url("js/jquery.numeric.start.js") }}"></script>      
+
+      <script id="companylicense_template" type="text/x-handlebars-template">
+        {{!#if Licenses}}          
+            <table id="tbcompanylicenses" class="table table-bordered table-hover table-common-idtaxi">
+                <thead>
+                    <tr>
+                        <th>Nro Licencia</th>
+                        <th>Fecha Vencimiento</th>
+                        <th>Estado</th>
+                        <th>Numero Qrs Asignados</th>                        
+                        <th>Numero Qrs Usados</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {{!#Licenses}} 
+                    <tr>
+                        <td>{{!license_number}}</td>
+                        <td>{{!due_date}}</td>
+                        <td>{{!closed_status}}</td>
+                        <td>{{!qrs_assigned}}</td>                        
+                        <td>{{!qrs_used}}</td>                        
+                        <td><a href="/companies/qrs/?license={{!license_number}}&ruc={{ruc}}&companyname={{companyname}}" class="btn btn-primary">Ver Qrs <span class="glyphicon glyphicon-qrcode"></span></a></td>
+                    </tr>  
+                {{!/Licenses}}         
+                </tbody>
+            </table>                 
+        {{!else}}
+          <p class="">No se encontro licencias.</p>
+        {{!/if}}        
+      </script>
+
+      <script>
+
+        function renderCompanyLicenses(data) {
+            $("#contentCompanyLicenses").html("");
+            var templatehtml = $("#companylicense_template").html();
+            var sourcehtml = Handlebars.compile(templatehtml);
+            $("#contentCompanyLicenses").html(sourcehtml({ Licenses: data }));
+        }        
+
+        $("#btnsearch").on("click", function(){
+            var input = $("#txtInputSearch").val();           
+            request_get_json("/companies/licenses/search/", {input : input, ruc : {{ruc}}}, function(data){
+                renderCompanyLicenses(data);
+            });
+        });
+
+        var array_licenses = {% raw array_json %};
+        renderCompanyLicenses(array_licenses);
+
+      </script>
+{% end scriptbody %}

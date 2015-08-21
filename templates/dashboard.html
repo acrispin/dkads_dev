@@ -1,0 +1,216 @@
+{% extends base.html %}
+
+{% block title %}Dashboard{% end %}
+
+{% block header %}{% include "partials/header.html" %}{% end %}
+{% block body %}
+
+	<div class="container padded-top padded-bottom">
+	    <div class="row">
+	        <div class="col-md-5 col-md-offset-1">
+	            <div class="panel panel-default">
+	                <div class="panel-heading"><b>QR disponibles</b></div>
+	                <div class="panel-body">
+	                    <em><span id="num_qrs"></span></em>
+	                </div>
+	                <table id="tbuuids" class="table">
+				      <thead>
+						<tr>
+						  <th>Nr QR</th>
+						  <th>QR UUID</th>
+						</tr>
+				      </thead>
+				      <tbody>
+
+				      </tbody>
+				    </table>
+	            </div>
+	        </div>
+	        <div class="col-md-5">
+	            <div class="panel panel-default">
+	                <div class="panel-heading"><b>QR vendidos</b></div>
+	                <div class="panel-body">
+	                    <p><em>Hoy <span class="badge" id="num_today"></span></em></p>
+	                    <p><em>Esta semana <span class="badge" id="num_week"></span></em></p>
+	                    <p><em>Este mes <span class="badge" id="num_month"></span></em></p>
+	                    <a href="/qrs/registered/">Ver mas detalles</a>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	    <div class="row">
+	        <div class="col-md-5 col-md-offset-1">
+	            <div class="panel panel-default">
+	                <div class="panel-heading"><b>QR por vencerse</b></div>
+	                <div id="panelbodyexpired" class="panel-body">
+	                  <em><span id="num_qrs_expired"></span></em>
+	                </div>
+	                <table id="tbuuidstoexpired" class="table">
+					    <thead>
+					      <tr>
+					      	{% if rol == "staff" %}
+						        <th>Nr Licencia</th>
+								<th>Fecha de Vencimiento</th>
+								<th>Ruc</th>
+								<th>Dni</th>
+								<th>Num Qrs</th>
+							{% elif rol == 'dealer' %}
+								<th>Nr Licencia</th>
+								<th>Fecha de Vencimiento</th>
+								<th>Dni</th>
+								<th>Nombre</th>
+								<th>Celular</th>
+						    {% end %}
+					      </tr>
+					    </thead>
+					    <tbody>
+					    </tbody>
+				  	</table>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	{#
+	<select id="ddlQrType" class="form-control">
+	  <option value="p">Pendientes</option>
+	  <option value="r">Registrados</option>
+	</select>
+	#}
+
+{% end %}
+
+{% block footer %}{% include "partials/footer.html" %}{% end %}
+
+{% block scriptbody %}
+	<script>
+		var caduuids = '{% raw cad_json %}';
+		var dict = {% raw cad_json2 %};
+		var array_to_expire = {% raw cad_json3 %};
+
+		buildUUIDsPending(JSON.parse(caduuids));
+		buildUUIDsSaled(dict);
+		buildUUIDsExpired(array_to_expire);
+
+		function buildUUIDsExpired (array) {
+			var $table = $("#tbuuidstoexpired tbody");
+			$table.html("");
+			var count = array.length;
+			if (count === 0) {
+				$("#num_qrs_expired").text("No presenta Licencias por vencer dentro de 2 semanas");
+				$("#tbuuidstoexpired").hide();
+				$("#panelbodyexpired").show();
+			}
+			else{
+				$("#num_qrs_expired").text("");
+				$("#tbuuidstoexpiredl").show();
+				$("#panelbodyexpired").hide();
+				for (var i = 0; i < count; i++) {
+					var row = "<tr>{0}{1}{2}{3}{4}</tr>";
+					var cel1 = "<td>{0}</td>".format(array[i][0]);
+					var cel2 = "<td>{0}</td>".format(array[i][1]);
+					var cel3 = "<td>{0}</td>".format(array[i][2] != null ? array[i][2] : "");
+					var cel4 = "<td>{0}</td>".format(array[i][3] != null ? array[i][3] : "");
+					var cel5 = "<td>{0}</td>".format(array[i][4]);
+					row = row.format(cel1,cel2,cel3,cel4,cel5);
+					$table.append(row);
+					if (i===9) {	// solo que me muestre los 10 primeros
+						break;
+					}
+				}
+			}
+		}
+
+		function buildUUIDsSaled (dict) {
+			if (typeof dict === "object") {
+				if (dict.hasOwnProperty("today")) {
+					$("#num_today").text("{0}".format(dict.today));
+				}
+				if (dict.hasOwnProperty("week")) {
+					$("#num_week").text("{0}".format(dict.week));
+				}
+				if (dict.hasOwnProperty("month")) {
+					$("#num_month").text("{0}".format(dict.month));
+				}
+			}
+		}
+
+		// for panel 1
+		function buildUUIDsPending(arrayuuids)
+		{
+			var $table = $("#tbuuids tbody");
+			$table.html("");
+			var num_qrs = arrayuuids.length;
+			if (num_qrs === 0) {
+				$("#num_qrs").text("No presenta QR disponibles");
+				$("#tbuuids").hide();
+			}
+			else{
+	                        if (num_qrs > 10) {
+				    $("#num_qrs").text("Tiene {0} QR disponibles aún. Puede ir utilizando estos 10 primeros.".format(num_qrs));
+                                }
+                                else {
+	                            $("#num_qrs").text("Tiene {0} QR disponibles aún.".format(num_qrs));
+	                        }
+				$("#tbuuids").show();
+				for (var i = 0; i < num_qrs; i++) {
+					var row = "<tr>{0}{1}</tr>";
+					var cel1 = "<td>{0}</td>".format(arrayuuids[i][3]);
+					var cel2 = "<td><a href='/registro/?email={0}&uuid={1}&num_uuid={2}'>{3}</a></td>".format('{{ email }}', arrayuuids[i][0], arrayuuids[i][3], arrayuuids[i][0].substr(0,7));
+					row = row.format(cel1,cel2);
+					$table.append(row);
+					if (i===9) {	// solo que me muestre los 10 primeros
+						break;
+					}
+				}
+			}
+
+		}
+
+		function buildUUIDsRegistered(arrayuuids)
+		{
+			var $table = $("#tbuuids tbody");
+			$table.html("");
+			for (var i = 0; i < arrayuuids.length; i++) {
+				var row = "<tr>{0}{1}</tr>";
+				var cel1 = "<td><a href='/unidad/{0}' target='_blank'>{0}</a></td>".format(arrayuuids[i][0]);
+				var cel2 = "<td>{0}</td>".format(arrayuuids[i][2] != null ? arrayuuids[i][2] : '-');
+				row = row.format(cel1,cel2);
+				$table.append(row);
+			}
+
+		}
+
+		function loadUUIDs(arrayuuids)
+		{
+			var value = $("#ddlQrType").val();
+			if (value !== "") {
+				switch(value){
+				case "p":
+					buildUUIDsPending(arrayuuids);
+					break;
+				case "r":
+					buildUUIDsRegistered(arrayuuids);
+					break;
+				}
+			}
+		}
+
+		$(document).on("change","#ddlQrType", function(){
+			var value = $(this).val();
+			if (value !== "") {
+				var arrayuuids = [];
+				request_get_json("/load/uuid/",{type:value, rol:"{{ rol }}", email:"{{ email }}" }, loadUUIDs);
+			}
+
+		});
+
+		$(document).ready(function(){
+             if (getCookie("itemsaved") !== "") {
+				main_ns.msgSuccess("QR Registrado");
+				deleteCookie("itemsaved");
+			}          
+        });       
+
+
+	</script>
+{% end %}
