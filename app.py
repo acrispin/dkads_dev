@@ -1,3 +1,4 @@
+import sys
 import tornado.web
 import tornado.options
 from tornado.httpserver import HTTPServer
@@ -19,10 +20,16 @@ if __name__ == '__main__':
             dsn = dsn,
             size = 5
         )
-        http_server = HTTPServer(application)
-        http_server.listen(http_port, '0.0.0.0')
 
-        print "Iniciando app en", http_port
+        if len(sys.argv) == 2 and sys.argv[1].isdigit():
+            port = int(sys.argv[1])
+        else:
+            port = http_port
+        
+        http_server = HTTPServer(application)
+        http_server.listen(port, '0.0.0.0')
+
+        print "Iniciando app en", port
 
         IOLoop.instance().start()
 

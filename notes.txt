@@ -85,7 +85,9 @@ basedb=# \dt       -- me lista las tablas creadas
  public | whs_tran     | table | development
 (8 rows)
 .........................................................
+
 basedb=# select * from sy_user;
+
 
 antes de levantar la aplicacion, cambiar las credenciales en 
 \base_dev\utils\env.py , verificar db, user, passwd, host y port
@@ -96,16 +98,24 @@ ejecutar la app "base_dev"
 :~/base_dev$ python app.py
 
 
-2014-04-27
-Update Momoko a la version 1.1.2 para manejar las transacciones
-================================================================
-:~$ source nombre_entorno/bin/activate  
-:~$ pip install --upgrade momoko
 
-2014-05-24
-Install pwgen para generador de passwords
-================================================================
-:~$ sudo apt-get install pwgen
+
+------------------------------------------------------------------------- ACTIVAR EL ENTORNO VIRTUAL Y LEVANTAR LA APP
+
+ir al directorio donde estan los entornos virtuales
+    $ cd path_to_virtualenvs
+
+activar el entorno virtual
+    $ source virtualenv_name/bin/activate
+
+ir a la ruta del proyecto
+    $ cd path_to_project
+
+levantar el proyecto
+    $ python app.py
+o pasandole un puerto especifico
+    $ python app.py 9876
+
 
 
 Deployment
@@ -126,13 +136,20 @@ psql -f nueva_unidad.sql basedb reynaldodevel
 
 bash cook_some_qr.sh
 
-AUTH LOGIN
-==========
-reynaldomic@gmail.com
-svidania
+
+Update Momoko a la version 1.1.2 para manejar las transacciones
+================================================================
+:~$ source nombre_entorno/bin/activate  
+:~$ pip install --upgrade momoko
+
+Install pwgen para generador de passwords
+================================================================
+:~$ sudo apt-get install pwgen
 
 
-notas
+
+NOTAS
+
 (1)
 si no permite hacer drop a la bd por los conecctiones activas, ejecutar el
 siguiente query:
@@ -183,8 +200,17 @@ ejemplo:
     ..$ tar xvzf PACKAGENAME.tar.gz
     ..$ tar xvjf PACKAGENAME.tar.bz2
 
-
 (6)
+verificacion del servicio de postgres si esta activo
+    ..$ sudo service --status-all | grep postgres
+    ..$ sudo service postgresql status
+
+(7)
+activacion de super usuario desde la terminal
+    ..$ sudo su
+
+
+(X)
 WINDOWS
 
 ************* windows

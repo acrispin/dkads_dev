@@ -1,18 +1,18 @@
 ﻿require.config({
     baseUrl: main_globals.virtualPath,
     paths: {
-        text: 'Static/js/libs/text',        
-        templates: 'Static/templates',
-        notify: 'Static/js/libs/notify.min',
-        ajaxcore: 'Static/js/utils/ajaxcore',
-        handlebarsHelper: 'Static/js/utils/handlebars.helpers',
-        utils: 'Static/js/utils/utils',
-        data: 'Static/js/core/data',
-        app: 'Static/js/core/app',
-        router: 'Static/js/core/router',
-        views: 'Static/js/core/views',
-        validator: 'Static/js/libs/validator.min',
-        alertify: 'Static/js/libs/alertify.min'
+        text: 'static/js/libs/text',        
+        templates: 'static/templates',
+        notify: 'static/js/libs/notify.min',
+        ajaxcore: 'static/js/utils/ajaxcore',
+        handlebarsHelper: 'static/js/utils/handlebars.helpers',
+        utils: 'static/js/utils/main',
+        data: 'static/js/core/data',
+        app: 'static/js/core/app',
+        router: 'static/js/core/router',
+        views: 'static/js/core/views',
+        validator: 'static/js/libs/validator.min',
+        alertify: 'static/js/libs/alertify.min'
     },
     shim: {
         "notify": { "deps": [] },

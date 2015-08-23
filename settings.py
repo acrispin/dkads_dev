@@ -6,7 +6,7 @@ settings = dict(
             xsrf_cookie = True,
             debug = True,
             # cookie_secret = 'da39a3ee5e6b4b0d3255bfef95601890afd80709',
-            cookie_secret = 'Hd7wOkBMR9axVHHuGKPs9udeNfvT8ETJhZvZ3m9RMTk=',
+            cookie_secret = 'E8rvgMe8TQeadwsMu2atLSLchV1w9U7/ml9/PTcveQM=',
             login_url = "/auth/login/"
         )
 
