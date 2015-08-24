@@ -27,6 +27,7 @@ if __name__ == '__main__':
         else:
             port = http_port
 
+        # usado para deployar en heroku y evitar el error : Web process failed to bind to $PORT within 60 seconds of launch
         port = int(os.environ.get('PORT', port))
         
         http_server = HTTPServer(application)

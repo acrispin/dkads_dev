@@ -23,6 +23,7 @@
     {% block header %}{% end %}
     <div class="container">
         <div class="container-fluid">
+            <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
             <div id="main">
                 {% block body %}{% end %}
             </div>
@@ -32,7 +33,7 @@
 
     <script type="text/javascript">
         var main_globals = {};
-        main_globals.virtualPath = "";
+        main_globals.virtualPath = "/";
         main_globals.galoPath = "/galo/data/";
         main_globals.flagDevelop = false;
         main_globals.sysVersion = "123456";
@@ -45,5 +46,6 @@
     <script src="{{ static_url("js/utils/i18n.js") }}"></script>
     <script src="{{ static_url("js/libs/bootstrap.min.js") }}"></script>
     <script src="{{ static_url("js/libs/require-min.js") }}" data-main="{{ static_url("js/core/main.js") }}"></script>
+    {% block scriptbody %}{% end %}
 </body>
 </html>

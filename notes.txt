@@ -57,7 +57,7 @@ clonar la app "base_dev"
 :~$ cd path_to_save_app
 :~$ git clone https://user_name@bitbucket.org/user/base_dev.git
 :~$ cd base_dev
-:~/base_dev$ pip install -r requirements/main.txt
+:~/base_dev$ pip install -r requirements.txt
 
 crear el esquema, ejecutar los scripts que estan el la app base_dev
 :~/base_dev$ psql -f scripts/SchemaPg/1_Tables.sql basedb development
@@ -138,20 +138,22 @@ psql -f nueva_unidad.sql basedb reynaldodevel
 bash cook_some_qr.sh
 
 
-Update Momoko a la version 1.1.2 para manejar las transacciones
+Update Momoko 
 ================================================================
-:~$ source nombre_entorno/bin/activate  
-:~$ pip install --upgrade momoko
+activar el entorno virtual
+    $ pip install --upgrade momoko
 
 Install pwgen para generador de passwords
 ================================================================
-:~$ sudo apt-get install pwgen
+    $ sudo apt-get install pwgen
+
 
 
 
 
 ------------------------------------------------------------------------- HEROKU
 deployar la app en heroku
+
 installar toolbelt: https://toolbelt.heroku.com/debian
 ir a la terminar y loguearse como su
     $ suso su
@@ -186,8 +188,41 @@ para abrir la app en el browser
 
 ver los logs en heroku
     $ heroku logs
+
+logs con numero por defecto
     $ heroku logs -n 1500
+
+tail the logs live, cola de logs online
     $ heroku logs -t 
+
+
+
+dashboard: https://dashboard.heroku.com/apps
+url db:    https://postgres.heroku.com/databases
+
+utils
+https://devcenter.heroku.com/articles/getting-started-with-python-o
+http://www.codecheese.com/2013/11/running-tornado-web-server-on-heroku/
+http://stackoverflow.com/questions/12895896/deploy-pure-python-to-heroku
+http://stackoverflow.com/questions/2671454/heroku-how-to-see-all-the-logs
+
+
+para actualizar la app, hacer push en heroku en otra pc, ejm windows
+http://stackoverflow.com/questions/18406721/heroku-does-not-appear-to-be-a-git-repository
+https://devcenter.heroku.com/articles/git
+instalar heroku toolbelt
+https://toolbelt.heroku.com/
+activar el entorno virtual o crearlo
+ir al directorio del proyecto y asociar heroku
+    $ heroku git:remote -a app_name_heroku
+    
+te pide credenciales de heroku, email y passwd
+    $ git push heroku master
+
+------------------------------------------------------------------------- HEROKU
+
+
+
 
 
 NOTAS
@@ -252,6 +287,13 @@ activacion de super usuario desde la terminal
     ..$ sudo su
 
 
+(8)
+http://stackoverflow.com/questions/17260338/deploying-flask-with-heroku
+error al deployar en heroku: Web process failed to bind to $PORT within 60 seconds of launch
+se devia a que en heroku se espera la variable PORT, se corrigio adicionando la linea "port = int(os.environ.get('PORT', port))"
+en app.py
+
+
 (X)
 WINDOWS
 
@@ -311,7 +353,7 @@ se activa el entorno mostrando: (base_env) ...>
 ir a la ruta donde esta el app, ejm: "F:\Proyectos\base_dev"
 ..>cd path_to_save_app
 installar las dependencias del proyecto
-..>pip install -r requirements\main.txt
+..>pip install -r requirements.txt
 crear el esquema, ejecutar los scripts que estan el la app base_dev
 ..>psql -f scripts\schema.sql basedb development
 ..>psql -f scripts\nueva_unidad.sql basedb development

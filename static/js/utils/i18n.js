@@ -49,7 +49,7 @@ i18n_ns = {
 	},
 	load: function() {
 		var self=this,lang=this.getLang();
-		$.getJSON(main_globals.virtualPath + '/static/js/lang/'+lang+'.js',function(data) {
+		$.getJSON(main_globals.virtualPath + 'static/js/lang/'+lang+'.js',function(data) {
 			self.put(lang,data).t();
 		}).error(function(){
 			self.put(lang,{}).t();

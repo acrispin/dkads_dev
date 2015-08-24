@@ -8,7 +8,7 @@ class ErrorHandler(tornado.web.RequestHandler):
         tornado.web.RequestHandler.__init__(self, application, request)
         self.set_status(status_code)
     
-    def get_error_html(self, status_code, **kwargs):
+    def write_error(self, status_code, **kwargs):
         self.require_setting("static_path")
         if status_code in [404, 500, 503, 403]:
             filename = os.path.join(self.settings['static_path'], '%d.html' % status_code)
@@ -16,12 +16,12 @@ class ErrorHandler(tornado.web.RequestHandler):
                 f = open(filename, 'r')
                 data = f.read()
                 f.close()
-                return data
-        return "<html><title>%(code)d: %(message)s</title>" \
-                "<body class='bodyErrorPage'>%(code)d: %(message)s</body></html>" % {
-            "code": status_code,
-            "message": httplib.responses[status_code],
-        }
+                self.write(data)
+        self.write("<html><title>%(code)d: %(message)s</title>" \
+                    "<body class='bodyErrorPage'><h1>%(code)d: %(message)s</h1></body></html>" % {
+                    "code": status_code,
+                    "message": httplib.responses[status_code],
+                })
     
     def prepare(self):
         raise tornado.web.HTTPError(self._status_code)
