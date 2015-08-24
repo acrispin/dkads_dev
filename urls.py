@@ -8,7 +8,7 @@ from handlers.report.pie import PieHandler
 
 url_patterns = [
     (r'/$', HomeHandler),
-    (r'/report/line/$', LineHandler),
+    (r'/report/line$', LineHandler),
     (r'/report/column$', ColumnHandler),
     (r'/report/pie$', PieHandler),
     (r'/static/(.*)$', StaticFileHandler, dict(path=settings['static_path'])),
