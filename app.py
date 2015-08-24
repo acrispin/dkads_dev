@@ -1,3 +1,4 @@
+import os
 import sys
 import tornado.web
 import tornado.options
@@ -25,6 +26,8 @@ if __name__ == '__main__':
             port = int(sys.argv[1])
         else:
             port = http_port
+
+        port = int(os.environ.get('PORT', port))
         
         http_server = HTTPServer(application)
         http_server.listen(port, '0.0.0.0')
