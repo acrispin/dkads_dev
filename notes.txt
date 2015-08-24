@@ -113,6 +113,7 @@ ir a la ruta del proyecto
 
 levantar el proyecto
     $ python app.py
+
 o pasandole un puerto especifico
     $ python app.py 9876
 
@@ -146,6 +147,47 @@ Install pwgen para generador de passwords
 ================================================================
 :~$ sudo apt-get install pwgen
 
+
+
+
+------------------------------------------------------------------------- HEROKU
+deployar la app en heroku
+installar toolbelt: https://toolbelt.heroku.com/debian
+ir a la terminar y loguearse como su
+    $ suso su
+
+ejecutar lo siguiente
+    $ wget -O- https://toolbelt.heroku.com/install-ubuntu.sh | sh
+
+loguearse en heroku
+    $ heroku login
+
+activar el entorno virtual e ir hasta la app a deployar en heroku
+crear el file Procfile y adicionarle la siguiente linea "web: python app.py"
+    $ touch Procfile
+    $ echo "web: python app.py" >> Procfile
+
+crear el file requirements.txt en la raiz de la app y adicionar las dependencias de la app
+    $ pip freeze > requirements.txt
+
+comitiar todos los cambios
+
+poner la app en el repositorio de heroku
+    $ heroku create
+
+deployar la aplicacion en heroku
+    $ git push heroku master
+
+para verificar el estado de la app
+    $ heroku ps
+
+para abrir la app en el browser
+    $ heroku open
+
+ver los logs en heroku
+    $ heroku logs
+    $ heroku logs -n 1500
+    $ heroku logs -t 
 
 
 NOTAS
