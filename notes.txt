@@ -345,20 +345,25 @@ ir a la ruta path_to_save_virtualenv donde se guardara los entornos virtuales
 debe ser diferente a la ruta donde esta la app
 ..>cd path_to_save_virtualenv
 ..>virtualenv --distribute base_env
+
 activar el entorno virtual
 ..>cd base_env
 ..>cd Scripts
 ..>activate
+
 se activa el entorno mostrando: (base_env) ...>
+
 ir a la ruta donde esta el app, ejm: "F:\Proyectos\base_dev"
 ..>cd path_to_save_app
+
 installar las dependencias del proyecto
 ..>pip install -r requirements.txt
+
 crear el esquema, ejecutar los scripts que estan el la app base_dev
-..>psql -f scripts\schema.sql basedb development
-..>psql -f scripts\nueva_unidad.sql basedb development
-crear un distribuidor con un paquete de 50 uuids que vence en 3 meses
-..>psql -f scripts\newDistPackage50uuids.sql basedb development
+..>psql -f scripts\SchemaPg\1_Tables.sql basedb development
+..>psql -f scripts\SchemaPg\2_Constrains.sql basedb development
+..>psql -f scripts\SchemaPg\3_Data.sql basedb development
+
 *************
 
 ejecutar la app "base_dev"
